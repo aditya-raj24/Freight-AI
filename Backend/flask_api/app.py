@@ -10,16 +10,34 @@ CORS(app)
 # ==============================
 # LOAD MODEL
 # ==============================
-model_path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '../../freight_model.pkl')
-)
+model_path_local = os.path.abspath(os.path.join(os.path.dirname(__file__), 'freight_model.pkl'))
+model_path_parent = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../freight_model.pkl'))
 
-try:
-    model = joblib.load(model_path)
-    print("Model loaded successfully")
-except Exception as e:
-    print(f"Failed to load model: {e}")
-    model = None
+model = None
+for path in [model_path_local, model_path_parent]:
+    if os.path.exists(path):
+        try:
+            model = joblib.load(path)
+            print(f"Model loaded successfully from: {path}")
+            break
+        except Exception as e:
+            print(f"Failed to load model from {path}: {e}")
+
+
+# ==============================
+# ROOT CORRIDOR / LANDING
+# ==============================
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({
+        "status": "Active",
+        "service": "FreightLink AI ML Prediction Service",
+        "version": "1.0.0",
+        "endpoints": {
+            "health": "/health [GET]",
+            "predict": "/predict [POST]"
+        }
+    })
 
 
 # ==============================

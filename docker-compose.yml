@@ -13,8 +13,8 @@ services:
 
   flask-ml:
     build:
-      context: .
-      dockerfile: Backend/flask_api/Dockerfile
+      context: ./Backend/flask_api
+      dockerfile: Dockerfile
     container_name: freightlink_ml
     ports:
       - "5000:5000"
