@@ -94,6 +94,6 @@ def predict():
 # RUN SERVER
 # ==============================
 if __name__ == '__main__':
-    # Disabling the reloader prevents duplicate model loading on startup, 
-    # resolving DLL loading conflicts and segmentation faults on Windows.
-    app.run(host='127.0.0.1', port=5000, debug=True, use_reloader=False)
+    # Bind to 0.0.0.0 and read PORT from environment for cloud deployment
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
