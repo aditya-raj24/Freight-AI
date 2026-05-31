@@ -1,0 +1,32 @@
+{
+  "NDLS": {
+    "name": "New Delhi",
+    "city": "Delhi",
+    "zone": "NR"
+  },
+  "BCT": {
+    "name": "Mumbai Central",
+    "city": "Mumbai",
+    "zone": "WR"
+  },
+  "HWH": {
+    "name": "Howrah Junction",
+    "city": "Kolkata",
+    "zone": "ER"
+  },
+  "MAS": {
+    "name": "Chennai Central",
+    "city": "Chennai",
+    "zone": "SR"
+  },
+  "PNBE": {
+    "name": "Patna Junction",
+    "city": "Patna",
+    "zone": "ECR"
+  },
+  "KGP": {
+    "name": "Kharagpur Junction",
+    "city": "Kharagpur",
+    "zone": "SER"
+  }
+}

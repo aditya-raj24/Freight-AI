@@ -1,0 +1,99 @@
+import os
+import joblib
+import pandas as pd
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+# ==============================
+# LOAD MODEL
+# ==============================
+model_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '../../freight_model.pkl')
+)
+
+try:
+    model = joblib.load(model_path)
+    print("Model loaded successfully")
+except Exception as e:
+    print(f"Failed to load model: {e}")
+    model = None
+
+
+# ==============================
+# HEALTH CHECK
+# ==============================
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({"status": "Flask ML API running"})
+
+
+# ==============================
+# PREDICTION ENDPOINT
+# ==============================
+@app.route('/predict', methods=['POST'])
+def predict():
+    try:
+        data = request.json
+
+        # ==============================
+        # VALIDATION
+        # ==============================
+        required_fields = [
+            "distance", "wagon_count", "total_weight",
+            "locomotive_power", "congestion_level",
+            "rainfall", "avg_wait_time"
+        ]
+
+        for field in required_fields:
+            if field not in data or data[field] is None:
+                return jsonify({"error": f"{field} is required"}), 400
+
+        # ==============================
+        # CREATE INPUT DATAFRAME
+        # ==============================
+        input_df = pd.DataFrame([{
+            "distance": data["distance"],
+            "wagon_count": data["wagon_count"],
+            "total_weight": data["total_weight"],
+            "locomotive_power": data["locomotive_power"],
+            "congestion_level": data["congestion_level"],
+            "rainfall": data["rainfall"],
+            "avg_wait_time": data["avg_wait_time"]
+        }])
+
+        # ==============================
+        # PREDICTION
+        # ==============================
+        if model:
+            prediction = model.predict(input_df)[0]
+            delay = float(prediction)
+        else:
+            # fallback logic
+            delay = 20.0
+            if data["congestion_level"] > 80:
+                delay += 20
+            if data["rainfall"] > 15:
+                delay += 10
+
+        return jsonify({
+            "delay": round(delay, 2)
+        })
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            "error": f"Prediction failed: {str(e)}"
+        }), 500
+
+
+# ==============================
+# RUN SERVER
+# ==============================
+if __name__ == '__main__':
+    # Disabling the reloader prevents duplicate model loading on startup, 
+    # resolving DLL loading conflicts and segmentation faults on Windows.
+    app.run(host='127.0.0.1', port=5000, debug=True, use_reloader=False)

@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: freightlink_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - freightlink_network
+
+  flask-ml:
+    build:
+      context: .
+      dockerfile: Backend/flask_api/Dockerfile
+    container_name: freightlink_ml
+    ports:
+      - "5000:5000"
+    networks:
+      - freightlink_network
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: freightlink_backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongodb:27017/freightlink
+      - FLASK_API_URL=http://flask-ml:5000
+      - JWT_SECRET=freightlink_secret_key_123456
+    depends_on:
+      - mongodb
+      - flask-ml
+    networks:
+      - freightlink_network
+
+  frontend:
+    build:
+      context: ./Frontend/Freight_App
+      dockerfile: Dockerfile
+    container_name: freightlink_frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - freightlink_network
+
+volumes:
+  mongo_data:
+
+networks:
+  freightlink_network:
+    driver: bridge
