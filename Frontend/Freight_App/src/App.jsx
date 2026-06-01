@@ -20,6 +20,7 @@ function App() {
   
   // Demo mode messages
   const [demoAlert, setDemoAlert] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
  
   // Check login on mount
   useEffect(() => {
@@ -136,48 +137,56 @@ function App() {
   const unreadCount = notifications.filter(n => n.status === "unread").length;
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${isSidebarOpen ? "sidebar-mobile-open" : ""}`}>
       <div className="bg-gradient-overlay"></div>
       
+      {/* Backdrop overlay for mobile drawer */}
+      {isSidebarOpen && (
+        <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)}></div>
+      )}
+      
       {/* Sidebar Navigation */}
-      <aside className="sidebar">
+      <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div className="logo-container">
           <div className="logo-icon">🚆</div>
           <span className="logo-text">FreightLink AI</span>
+          <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)} aria-label="Close menu">
+            ✕
+          </button>
         </div>
 
         <nav className="nav-links">
-          <button className={`nav-item ${activeTab === "dashboard" ? "active" : ""}`} onClick={() => setActiveTab("dashboard")}>
+          <button className={`nav-item ${activeTab === "dashboard" ? "active" : ""}`} onClick={() => { setActiveTab("dashboard"); setIsSidebarOpen(false); }}>
             <span>📊</span> Dashboard
           </button>
 
           {isCustomer && (
             <>
-              <button className={`nav-item ${activeTab === "ai" ? "active" : ""}`} onClick={() => setActiveTab("ai")}>
+              <button className={`nav-item ${activeTab === "ai" ? "active" : ""}`} onClick={() => { setActiveTab("ai"); setIsSidebarOpen(false); }}>
                 <span>🤖</span> AI Scheduling
               </button>
-              <button className={`nav-item ${activeTab === "booking" ? "active" : ""}`} onClick={() => setActiveTab("booking")}>
+              <button className={`nav-item ${activeTab === "booking" ? "active" : ""}`} onClick={() => { setActiveTab("booking"); setIsSidebarOpen(false); }}>
                 <span>📦</span> Freight Booking
               </button>
             </>
           )}
 
           {isOfficer && (
-            <button className={`nav-item ${activeTab === "operations" ? "active" : ""}`} onClick={() => setActiveTab("operations")}>
+            <button className={`nav-item ${activeTab === "operations" ? "active" : ""}`} onClick={() => { setActiveTab("operations"); setIsSidebarOpen(false); }}>
               <span>⚙️</span> Control Room
             </button>
           )}
 
-          <button className={`nav-item ${activeTab === "tracking" ? "active" : ""}`} onClick={() => setActiveTab("tracking")}>
+          <button className={`nav-item ${activeTab === "tracking" ? "active" : ""}`} onClick={() => { setActiveTab("tracking"); setIsSidebarOpen(false); }}>
             <span>📍</span> Train Tracking
           </button>
 
           {isOfficer && (
             <>
-              <button className={`nav-item ${activeTab === "analytics" ? "active" : ""}`} onClick={() => setActiveTab("analytics")}>
+              <button className={`nav-item ${activeTab === "analytics" ? "active" : ""}`} onClick={() => { setActiveTab("analytics"); setIsSidebarOpen(false); }}>
                 <span>📈</span> Analytics
               </button>
-              <button className={`nav-item ${activeTab === "admin" ? "active" : ""}`} onClick={() => setActiveTab("admin")}>
+              <button className={`nav-item ${activeTab === "admin" ? "active" : ""}`} onClick={() => { setActiveTab("admin"); setIsSidebarOpen(false); }}>
                 <span>⚙️</span> Data Management
               </button>
             </>
@@ -188,7 +197,7 @@ function App() {
         {/* User Profile Info Badge (Acts as Active Profile Tab Button) */}
         <div 
           className={`user-badge ${activeTab === "profile" ? "active" : ""}`}
-          onClick={() => setActiveTab("profile")}
+          onClick={() => { setActiveTab("profile"); setIsSidebarOpen(false); }}
         >
           <div className="user-avatar">{user.name.charAt(0)}</div>
           <div className="user-info">
@@ -203,9 +212,14 @@ function App() {
         
         {/* Global Header */}
         <header className="no-print">
-          <div className="header-title-section">
-            <h1>FreightLink Intelligence</h1>
-            <p>Academic AI Railway Logistics Scheduler</p>
+          <div className="header-left-group">
+            <button className="menu-toggle-btn" onClick={() => setIsSidebarOpen(true)} aria-label="Open menu">
+              ☰
+            </button>
+            <div className="header-title-section">
+              <h1>FreightLink Intelligence</h1>
+              <p>Academic AI Railway Logistics Scheduler</p>
+            </div>
           </div>
 
           {/* Academic Global Disclaimer
