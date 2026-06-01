@@ -153,45 +153,45 @@ function DashboardOverview({ onNavigate, user }) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "1.5rem" }}>
+      <div className="dashboard-layout-grid">
         
         {/* Recent logs */}
         <div className="glass-card">
           <div className="card-title">Recent Operational Actions</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div className="dashboard-log-list">
             {logs.map((log, index) => (
-              <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-color)", paddingBottom: "0.75rem" }}>
-                <div>
-                  <div style={{ fontSize: "0.9rem", fontWeight: "600" }}>{log.action}</div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
+              <div key={index} className="dashboard-log-item">
+                <div className="dashboard-log-text-group">
+                  <div className="dashboard-log-action">{log.action}</div>
+                  <div className="dashboard-log-time">
                     {new Date(log.timestamp).toLocaleString()}
                   </div>
                 </div>
-                <span className="badge badge-muted" style={{ fontSize: "0.7rem" }}>{log.user}</span>
+                <span className="badge badge-muted dashboard-log-badge">{log.user}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Custom Donut Widget */}
-        <div className="glass-card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div className="glass-card yard-status-card">
           <div className="card-title">Yard Fleet Status</div>
-          <div style={{ height: "130px", width: "100%", display: "flex", justifyContent: "center" }}>
-            <div style={{ width: "130px", height: "130px" }}>
+          <div className="donut-chart-container">
+            <div className="donut-chart-wrapper">
               <SVGDonutChart data={utilization} colors={COLORS} />
             </div>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-around", fontSize: "0.8rem", marginTop: "1rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: COLORS[0] }}></div>
+          <div className="donut-legend">
+            <div className="legend-item">
+              <div className="legend-dot" style={{ backgroundColor: COLORS[0] }}></div>
               <span>Free</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: COLORS[1] }}></div>
+            <div className="legend-item">
+              <div className="legend-dot" style={{ backgroundColor: COLORS[1] }}></div>
               <span>Allocated</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: COLORS[2] }}></div>
+            <div className="legend-item">
+              <div className="legend-dot" style={{ backgroundColor: COLORS[2] }}></div>
               <span>Repairs</span>
             </div>
           </div>
