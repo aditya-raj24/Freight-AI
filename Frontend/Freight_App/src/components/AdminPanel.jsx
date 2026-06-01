@@ -185,7 +185,7 @@ function AdminPanel() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       {/* Sub Tabs */}
-      <div className="glass-card" style={{ display: "flex", gap: "1rem" }}>
+      <div className="glass-card admin-tabs-container">
         <button className={`btn-secondary ${subTab === "users" ? "btn-primary" : ""}`} onClick={() => setSubTab("users")}>Users CRUD</button>
         <button className={`btn-secondary ${subTab === "stations" ? "btn-primary" : ""}`} onClick={() => setSubTab("stations")}>Stations CRUD</button>
         <button className={`btn-secondary ${subTab === "wagons" ? "btn-primary" : ""}`} onClick={() => setSubTab("wagons")}>Wagons CRUD</button>
@@ -197,7 +197,7 @@ function AdminPanel() {
 
       {/* ==================== USERS SECTION ==================== */}
       {subTab === "users" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "1.5rem", alignItems: "start" }}>
+        <div className="admin-crud-grid">
           <div className="glass-card">
             <div className="card-title">Add User Accounts</div>
             <form onSubmit={handleCreateUser} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -254,7 +254,7 @@ function AdminPanel() {
 
       {/* ==================== STATIONS SECTION ==================== */}
       {subTab === "stations" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "1.5rem", alignItems: "start" }}>
+        <div className="admin-crud-grid">
           <div className="glass-card">
             <div className="card-title">Register Station</div>
             <form onSubmit={handleCreateStation} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -322,7 +322,7 @@ function AdminPanel() {
 
       {/* ==================== WAGONS SECTION ==================== */}
       {subTab === "wagons" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "1.5rem", alignItems: "start" }}>
+        <div className="admin-crud-grid">
           <div className="glass-card">
             <div className="card-title">Add Wagon Stock</div>
             <form onSubmit={handleCreateWagon} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -421,7 +421,7 @@ function AdminPanel() {
 
       {/* ==================== OFFICER IDS CRUD SECTION ==================== */}
       {subTab === "officerIds" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "1.5rem", alignItems: "start" }}>
+        <div className="admin-crud-grid">
           <div className="glass-card">
             <div className="card-title">Authorize Officer ID</div>
             <form onSubmit={handleCreateOfficerId} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>

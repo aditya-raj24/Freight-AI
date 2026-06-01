@@ -306,7 +306,7 @@ function AnalyticsView() {
       </div>
 
       {/* Grid of Custom SVG Charts */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: "1.5rem" }}>
+      <div className="analytics-grid">
         
         {/* Chart 1: Monthly Freight Volume */}
         <div className="glass-card">
@@ -327,7 +327,7 @@ function AnalyticsView() {
         {/* Chart 3: Wagon Utilization Pie */}
         <div className="glass-card">
           <div className="card-title">Wagon Fleet Status & Allocation</div>
-          <div style={{ display: "flex", alignItems: "center", gap: "2rem", marginTop: "1rem", height: 200 }}>
+          <div className="analytics-donut-container">
             <div style={{ width: "45%", height: "100%" }}>
               <SVGDonutChart data={data.charts.wagonUtilization} colors={COLORS} />
             </div>

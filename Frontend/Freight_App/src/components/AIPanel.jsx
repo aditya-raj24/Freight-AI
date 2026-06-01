@@ -233,7 +233,7 @@ function AIPanel() {
 
       {/* Visual Analytics Widgets */}
       {result && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "1.5rem" }}>
+        <div className="ai-results-grid">
           
           {/* Gauge Widget */}
           <div className="glass-card" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>

@@ -157,7 +157,7 @@ function Operations() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       {/* Sub Tabs */}
-      <div className="glass-card" style={{ display: "flex", gap: "1rem" }}>
+      <div className="glass-card" style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
         <button className={`btn-secondary ${subTab === "bookings" ? "btn-primary" : ""}`} onClick={() => setSubTab("bookings")}>Booking Management</button>
         <button className={`btn-secondary ${subTab === "wagons" ? "btn-primary" : ""}`} onClick={() => setSubTab("wagons")}>Wagon Siding Allocation</button>
         <button className={`btn-secondary ${subTab === "congestion" ? "btn-primary" : ""}`} onClick={() => setSubTab("congestion")}>Station Congestion Monitor</button>
