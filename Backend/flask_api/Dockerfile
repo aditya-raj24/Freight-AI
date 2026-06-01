@@ -9,6 +9,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy files (includes app.py and the copied freight_model.pkl)
 COPY . .
 
-EXPOSE 5000
+EXPOSE 7860
 
 CMD ["python", "app.py"]
