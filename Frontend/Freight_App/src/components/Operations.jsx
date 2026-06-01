@@ -157,7 +157,7 @@ function Operations() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       {/* Sub Tabs */}
-      <div className="glass-card" style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+      <div className="glass-card operations-tabs-container">
         <button className={`btn-secondary ${subTab === "bookings" ? "btn-primary" : ""}`} onClick={() => setSubTab("bookings")}>Booking Management</button>
         <button className={`btn-secondary ${subTab === "wagons" ? "btn-primary" : ""}`} onClick={() => setSubTab("wagons")}>Wagon Siding Allocation</button>
         <button className={`btn-secondary ${subTab === "congestion" ? "btn-primary" : ""}`} onClick={() => setSubTab("congestion")}>Station Congestion Monitor</button>
@@ -168,7 +168,7 @@ function Operations() {
         <div className="glass-card">
           <div className="card-title">Freight Bookings Pipeline</div>
           <div className="table-container">
-            <table>
+            <table className="responsive-table">
               <thead>
                 <tr>
                   <th>Booking ID</th>
@@ -185,17 +185,17 @@ function Operations() {
                   const nextStage = getNextStage(b.bookingStatus);
                   return (
                     <tr key={b.bookingId}>
-                      <td><b>{b.bookingId}</b></td>
-                      <td>{b.customerId?.name || "Customer"}</td>
-                      <td>{b.sourceStation} ➔ {b.destinationStation}</td>
-                      <td>{b.cargoType} ({b.weight}t | {b.wagonCount} wagons)</td>
-                      <td><span className={`badge badge-${b.priority === "Critical" ? "danger" : b.priority === "High" ? "warning" : "info"}`}>{b.priority}</span></td>
-                      <td>
+                      <td data-label="Booking ID"><b>{b.bookingId}</b></td>
+                      <td data-label="Customer">{b.customerId?.name || "Customer"}</td>
+                      <td data-label="Route">{b.sourceStation} ➔ {b.destinationStation}</td>
+                      <td data-label="Cargo Details">{b.cargoType} ({b.weight}t | {b.wagonCount} wagons)</td>
+                      <td data-label="Priority"><span className={`badge badge-${b.priority === "Critical" ? "danger" : b.priority === "High" ? "warning" : "info"}`}>{b.priority}</span></td>
+                      <td data-label="Pipeline Status">
                         <span className={`badge badge-${b.bookingStatus === "Delivered" ? "success" : b.bookingStatus === "Submitted" ? "muted" : "info"}`}>
                           {b.bookingStatus}
                         </span>
                       </td>
-                      <td>
+                      <td data-label="Action">
                         {b.bookingStatus === "Approved" && (
                           <button className="btn-primary" style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem" }} onClick={() => handleGetRecommendation(b)}>
                             Allocate Wagons (AI)
@@ -224,7 +224,7 @@ function Operations() {
         <div className="glass-card">
           <div className="card-title">Yard Wagons Siding Status</div>
           <div className="table-container">
-            <table>
+            <table className="responsive-table">
               <thead>
                 <tr>
                   <th>Wagon Number</th>
@@ -238,12 +238,12 @@ function Operations() {
               <tbody>
                 {wagons.map((w) => (
                   <tr key={w.wagonNumber}>
-                    <td><b>{w.wagonNumber}</b></td>
-                    <td>{w.wagonType}</td>
-                    <td>{w.capacity} Tons</td>
-                    <td>{w.currentStation}</td>
-                    <td><span className={`badge badge-${w.status === "Available" ? "success" : w.status === "Allocated" ? "info" : "warning"}`}>{w.status}</span></td>
-                    <td>
+                    <td data-label="Wagon Number"><b>{w.wagonNumber}</b></td>
+                    <td data-label="Wagon Type">{w.wagonType}</td>
+                    <td data-label="Capacity Load">{w.capacity} Tons</td>
+                    <td data-label="Siding Station">{w.currentStation}</td>
+                    <td data-label="Fleet Status"><span className={`badge badge-${w.status === "Available" ? "success" : w.status === "Allocated" ? "info" : "warning"}`}>{w.status}</span></td>
+                    <td data-label="Operational Action">
                       {w.status === "Allocated" && (
                         <button className="btn-secondary" style={{ padding: "0.3rem 0.7rem", fontSize: "0.75rem" }} onClick={() => handleReleaseWagons(w.wagonNumber, w.currentStation)}>
                           Release Wagon
@@ -265,7 +265,7 @@ function Operations() {
         <div className="glass-card">
           <div className="card-title">Live Siding Congestion Monitor</div>
           <div className="table-container">
-            <table>
+            <table className="responsive-table">
               <thead>
                 <tr>
                   <th>Station Name</th>
@@ -279,9 +279,9 @@ function Operations() {
               <tbody>
                 {stations.map((s) => (
                   <tr key={s.stationCode}>
-                    <td><b>{s.stationName}</b></td>
-                    <td>{s.stationCode}</td>
-                    <td style={{ width: "250px" }}>
+                    <td data-label="Station Name"><b>{s.stationName}</b></td>
+                    <td data-label="Station Code">{s.stationCode}</td>
+                    <td className="congestion-level-td" data-label="Congestion Index">
                       <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                         <input
                           type="range"
@@ -294,7 +294,7 @@ function Operations() {
                         <span style={{ minWidth: "35px", textAlign: "right" }}>{s.congestionLevel}%</span>
                       </div>
                     </td>
-                    <td style={{ width: "120px" }}>
+                    <td className="available-tracks-td" data-label="Available Tracks">
                       <select
                         value={s.availableTracks}
                         onChange={(e) => handleStationSlider(s.stationCode, "availableTracks", e.target.value)}
@@ -303,7 +303,7 @@ function Operations() {
                         {[0, 1, 2, 3, 4, 5, 6].map(t => <option key={t} value={t}>{t} tracks</option>)}
                       </select>
                     </td>
-                    <td style={{ width: "120px" }}>
+                    <td className="waiting-trains-td" data-label="Waiting Trains">
                       <input
                         type="number"
                         min="0"
@@ -312,7 +312,7 @@ function Operations() {
                         style={{ padding: "0.3rem", width: "70px" }}
                       />
                     </td>
-                    <td>
+                    <td data-label="Operational Risk">
                       <span className={`badge badge-${getStationRiskColor(s.congestionLevel)}`}>
                         {s.congestionLevel > 80 ? "Critical (Red)" : s.congestionLevel > 50 ? "Medium (Yellow)" : "Low (Green)"}
                       </span>
@@ -355,7 +355,7 @@ function Operations() {
                   <div style={{ marginBottom: "0.5rem", fontWeight: "bold" }}>Suggested Wagon Fleet:</div>
                   <div style={{ maxHeight: "150px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                     {recDetails.recommendedWagons.map(w => (
-                      <div key={w.wagonNumber} style={{ display: "flex", justifyContent: "space-between", background: "rgba(255,255,255,0.03)", padding: "0.5rem", borderRadius: "6px" }}>
+                      <div key={w.wagonNumber} className="recommendation-wagon-item">
                         <span><b>{w.wagonNumber}</b> ({w.wagonType})</span>
                         <span style={{ color: w.isAtSource ? "var(--success)" : "var(--text-secondary)" }}>
                           Station: {w.currentStation} {w.isAtSource && "(Siding Match)"}
@@ -365,7 +365,7 @@ function Operations() {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem", marginTop: "1rem" }}>
+                <div className="modal-actions-container">
                   <button className="btn-secondary" onClick={() => setSelectedBookingRec(null)}>Cancel</button>
                   <button className="btn-primary" onClick={handleAllocateRecommended} disabled={recDetails.recommendedWagons.length === 0}>
                     Allocate Recommended Stock

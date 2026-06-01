@@ -1032,6 +1032,39 @@ tr:hover td {
   border-radius: 50%;
 }
 
+/* Operations / Control Room Elements */
+.operations-tabs-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.congestion-level-td {
+  width: 250px;
+}
+
+.available-tracks-td,
+.waiting-trains-td {
+  width: 120px;
+}
+
+.recommendation-wagon-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem;
+  border-radius: 6px;
+  gap: 0.5rem;
+}
+
+.modal-actions-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 /* Admin Panel Layout Grid & Tabs */
 .admin-crud-grid {
   display: grid;
@@ -1259,6 +1292,16 @@ tr:hover td {
       flex-direction: column;
       align-items: flex-start;
     }
+
+    .operations-tabs-container {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .operations-tabs-container button {
+      width: 100%;
+      text-align: center;
+    }
   }
 
   .dashboard-log-item {
@@ -1276,6 +1319,23 @@ tr:hover td {
     .dashboard-log-badge {
       align-self: flex-start;
     }
+    
+    .recommendation-wagon-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .modal-actions-container {
+      flex-direction: column-reverse;
+      width: 100%;
+      gap: 0.75rem;
+    }
+
+    .modal-actions-container button {
+      width: 100%;
+      text-align: center;
+    }
   }
 
   .main-content {
@@ -1292,5 +1352,87 @@ tr:hover td {
     left: 0;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  /* Responsive Tables for Mobile */
+  .responsive-table {
+    border: none;
+    display: block;
+    width: 100%;
+  }
+  .responsive-table thead {
+    display: none;
+  }
+  .responsive-table tbody,
+  .responsive-table tr,
+  .responsive-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .responsive-table tr {
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  .responsive-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .responsive-table tr td:last-child {
+    border-bottom: none;
+  }
+  .responsive-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    margin-right: 1.5rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .responsive-table td.congestion-level-td,
+  .responsive-table td.available-tracks-td,
+  .responsive-table td.waiting-trains-td {
+    width: 100% !important;
+  }
+  
+  /* Inputs inside responsive tables on mobile */
+  .responsive-table td input[type="range"] {
+    width: 100px;
+  }
+  .responsive-table td select,
+  .responsive-table td input[type="number"] {
+    padding: 0.4rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: white;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    max-width: 140px;
+    text-align: right;
+  }
+  .responsive-table td select option {
+    background: #0d121e;
+    color: white;
+  }
+
+  /* Scrollable Modals/Overlays on Mobile */
+  .receipt-overlay {
+    padding: 1rem;
+    overflow-y: auto;
+    align-items: flex-start;
+  }
+  .receipt-overlay .glass-card {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 }
