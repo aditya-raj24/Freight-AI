@@ -8,6 +8,11 @@ let transporter = null;
 const getTransporter = async () => {
   if (transporter) return transporter;
 
+  const emailUser = process.env.EMAIL_USER;
+  const clientId = process.env.CLIENT_ID;
+  const clientSecret = process.env.CLIENT_SECRET;
+  const refreshToken = process.env.REFRESH_TOKEN;
+
   const smtpHost = process.env.SMTP_HOST;
   const smtpPort = process.env.SMTP_PORT || 587;
   const smtpUser = process.env.SMTP_USER;
@@ -15,7 +20,19 @@ const getTransporter = async () => {
 
   const isPlaceholder = (val) => !val || val.includes("ENTER_YOUR_") || val.includes("your_");
 
-  if (smtpHost && smtpUser && smtpPass && !isPlaceholder(smtpUser) && !isPlaceholder(smtpPass)) {
+  if (emailUser && clientId && clientSecret && refreshToken && !isPlaceholder(emailUser) && !isPlaceholder(clientId)) {
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: emailUser,
+        clientId: clientId,
+        clientSecret: clientSecret,
+        refreshToken: refreshToken
+      }
+    });
+    console.log("Using Gmail OAuth2 configuration from environment.");
+  } else if (smtpHost && smtpUser && smtpPass && !isPlaceholder(smtpUser) && !isPlaceholder(smtpPass)) {
     transporter = nodemailer.createTransport({
       host: smtpHost,
       port: parseInt(smtpPort),
@@ -578,7 +595,7 @@ FreightLink AI Administration`;
   const transporterInstance = await getTransporter();
   if (transporterInstance) {
     try {
-      const fromEmail = process.env.SMTP_USER || transporterInstance.options?.auth?.user || "no-reply@freightlink.ai";
+      const fromEmail = process.env.EMAIL_USER || process.env.SMTP_USER || transporterInstance.options?.auth?.user || "no-reply@freightlink.ai";
       
       const info = await transporterInstance.sendMail({
         from: `"FreightLink AI" <${fromEmail}>`,
@@ -643,7 +660,7 @@ FreightLink AI Administration`;
   const transporterInstance = await getTransporter();
   if (transporterInstance) {
     try {
-      const fromEmail = process.env.SMTP_USER || transporterInstance.options?.auth?.user || "no-reply@freightlink.ai";
+      const fromEmail = process.env.EMAIL_USER || process.env.SMTP_USER || transporterInstance.options?.auth?.user || "no-reply@freightlink.ai";
       
       const info = await transporterInstance.sendMail({
         from: `"FreightLink AI" <${fromEmail}>`,
@@ -703,7 +720,7 @@ FreightLink AI Administration`;
   const transporterInstance = await getTransporter();
   if (transporterInstance) {
     try {
-      const fromEmail = process.env.SMTP_USER || transporterInstance.options?.auth?.user || "no-reply@freightlink.ai";
+      const fromEmail = process.env.EMAIL_USER || process.env.SMTP_USER || transporterInstance.options?.auth?.user || "no-reply@freightlink.ai";
       
       const info = await transporterInstance.sendMail({
         from: `"FreightLink AI" <${fromEmail}>`,
@@ -852,7 +869,7 @@ FreightLink AI Administration`;
   const transporterInstance = await getTransporter();
   if (transporterInstance) {
     try {
-      const fromEmail = process.env.SMTP_USER || transporterInstance.options?.auth?.user || "no-reply@freightlink.ai";
+      const fromEmail = process.env.EMAIL_USER || process.env.SMTP_USER || transporterInstance.options?.auth?.user || "no-reply@freightlink.ai";
       
       const info = await transporterInstance.sendMail({
         from: `"FreightLink AI" <${fromEmail}>`,
