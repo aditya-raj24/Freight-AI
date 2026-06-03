@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { API_BASE } from "../config";
 
-function TrainTracking() {
+function TrainTracking({ theme }) {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const trainMarkerRef = useRef(null);
   const polylineRef = useRef(null);
+  const tileLayerRef = useRef(null);
   
   const [bookings, setBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -52,20 +53,29 @@ function TrainTracking() {
   useEffect(() => {
     if (!window.L || stations.length === 0) return;
 
+    const L = window.L;
+
     // Check if Leaflet map already initialized
     if (!mapInstanceRef.current) {
-      mapInstanceRef.current = window.L.map("tracking-map").setView([22.5, 80], 5);
-      
-      window.L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-      }).addTo(mapInstanceRef.current);
+      mapInstanceRef.current = L.map("tracking-map").setView([22.5, 80], 5);
     }
 
-    const L = window.L;
+    // Add or update tile layer based on active theme
+    if (tileLayerRef.current) {
+      mapInstanceRef.current.removeLayer(tileLayerRef.current);
+    }
+
+    const tileUrl = theme === "dark"
+      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+
+    tileLayerRef.current = L.tileLayer(tileUrl, {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    }).addTo(mapInstanceRef.current);
 
     // Custom SVG icon to prevent default icon asset loading issues in Vite
     const createStationIcon = (color) => L.divIcon({
-      html: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="3"><circle cx="12" cy="12" r="8" fill="#0f172a"/></svg>`,
+      html: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="3"><circle cx="12" cy="12" r="8" fill="var(--gauge-inner-bg)"/></svg>`,
       className: "custom-station-icon",
       iconSize: [18, 18],
       iconAnchor: [9, 9]
@@ -191,7 +201,7 @@ function TrainTracking() {
       clearInterval(interval);
     };
 
-  }, [selectedBooking, stations]);
+  }, [selectedBooking, stations, theme]);
 
   return (
     <div className="glass-card">

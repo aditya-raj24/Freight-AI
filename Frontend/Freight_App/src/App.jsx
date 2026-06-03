@@ -18,6 +18,21 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   
+  // Theme state
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "dark";
+  });
+
+  // Apply theme to document element
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+  
   // Demo mode messages
   const [demoAlert, setDemoAlert] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -127,7 +142,21 @@ function App() {
 
 
   if (!user) {
-    return <Auth onAuthSuccess={handleAuthSuccess} />;
+    return (
+      <>
+        <div style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 100 }}>
+          <button 
+            className="icon-btn theme-toggle-btn" 
+            onClick={toggleTheme} 
+            aria-label="Toggle Theme" 
+            title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+        </div>
+        <Auth onAuthSuccess={handleAuthSuccess} />
+      </>
+    );
   }
 
   // Filter sidebar tabs by Role
@@ -230,6 +259,16 @@ function App() {
 
           <div className="header-actions">
             
+            {/* Theme Toggle Button */}
+            <button 
+              className="icon-btn theme-toggle-btn" 
+              onClick={toggleTheme} 
+              aria-label="Toggle Theme" 
+              title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {theme === "dark" ? "☀️" : "🌙"}
+            </button>
+            
             {/* Notification Bell */}
             <div className="notification-bell-container">
               <button className="icon-btn" onClick={() => setShowNotifDropdown(!showNotifDropdown)}>
@@ -273,7 +312,7 @@ function App() {
           {activeTab === "ai" && isCustomer && <AIPanel />}
           {activeTab === "booking" && isCustomer && <BookingPanel />}
           {activeTab === "operations" && isOfficer && <Operations />}
-          {activeTab === "tracking" && <TrainTracking />}
+          {activeTab === "tracking" && <TrainTracking theme={theme} />}
           {activeTab === "analytics" && isOfficer && <AnalyticsView />}
           {activeTab === "admin" && isOfficer && <AdminPanel />}
           {activeTab === "profile" && <Profile handleLogout={handleLogout} />}

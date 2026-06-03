@@ -43,7 +43,7 @@ function SVGAreaChart({ data }) {
       {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
         const y = paddingTop + ratio * (height - paddingTop - paddingBottom);
         return (
-          <line key={i} x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+          <line key={i} x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="var(--border-color)" strokeWidth="1" />
         );
       })}
 
@@ -57,14 +57,14 @@ function SVGAreaChart({ data }) {
       ))}
 
       {/* Axes */}
-      <line x1={paddingLeft} y1={height - paddingBottom} x2={width - paddingRight} y2={height - paddingBottom} stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
-      <line x1={paddingLeft} y1={paddingTop} x2={paddingLeft} y2={height - paddingBottom} stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
+      <line x1={paddingLeft} y1={height - paddingBottom} x2={width - paddingRight} y2={height - paddingBottom} stroke="var(--border-color)" strokeWidth="1.5" />
+      <line x1={paddingLeft} y1={paddingTop} x2={paddingLeft} y2={height - paddingBottom} stroke="var(--border-color)" strokeWidth="1.5" />
 
       {/* X Labels */}
       {data.map((d, i) => {
         const x = paddingLeft + (i * (width - paddingLeft - paddingRight)) / (data.length - 1);
         return (
-          <text key={i} x={x} y={height - 10} fill="#94a3b8" fontSize="10" textAnchor="middle">
+          <text key={i} x={x} y={height - 10} fill="var(--text-secondary)" fontSize="10" textAnchor="middle">
             {d.month}
           </text>
         );
@@ -75,7 +75,7 @@ function SVGAreaChart({ data }) {
         const val = Math.round(maxVal - ratio * maxVal);
         const y = paddingTop + ratio * (height - paddingTop - paddingBottom);
         return (
-          <text key={i} x={paddingLeft - 8} y={y + 3} fill="#94a3b8" fontSize="9" textAnchor="end">
+          <text key={i} x={paddingLeft - 8} y={y + 3} fill="var(--text-secondary)" fontSize="9" textAnchor="end">
             {val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}
           </text>
         );
@@ -115,7 +115,7 @@ function SVGLineChart({ data, dataKey, color }) {
       {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
         const y = paddingTop + ratio * (height - paddingTop - paddingBottom);
         return (
-          <line key={i} x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+          <line key={i} x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="var(--border-color)" strokeWidth="1" />
         );
       })}
 
@@ -124,18 +124,18 @@ function SVGLineChart({ data, dataKey, color }) {
 
       {/* Points */}
       {points.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r="5" fill="#0b0f19" stroke={color} strokeWidth="2.5" />
+        <circle key={i} cx={p.x} cy={p.y} r="5" fill="var(--bg-color)" stroke={color} strokeWidth="2.5" />
       ))}
 
       {/* Axes */}
-      <line x1={paddingLeft} y1={height - paddingBottom} x2={width - paddingRight} y2={height - paddingBottom} stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
-      <line x1={paddingLeft} y1={paddingTop} x2={paddingLeft} y2={height - paddingBottom} stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
+      <line x1={paddingLeft} y1={height - paddingBottom} x2={width - paddingRight} y2={height - paddingBottom} stroke="var(--border-color)" strokeWidth="1.5" />
+      <line x1={paddingLeft} y1={paddingTop} x2={paddingLeft} y2={height - paddingBottom} stroke="var(--border-color)" strokeWidth="1.5" />
 
       {/* X Labels */}
       {data.map((d, i) => {
         const x = paddingLeft + (i * (width - paddingLeft - paddingRight)) / (data.length - 1);
         return (
-          <text key={i} x={x} y={height - 10} fill="#94a3b8" fontSize="8" textAnchor="middle">
+          <text key={i} x={x} y={height - 10} fill="var(--text-secondary)" fontSize="8" textAnchor="middle">
             {d.date}
           </text>
         );
@@ -146,7 +146,7 @@ function SVGLineChart({ data, dataKey, color }) {
         const val = Math.round(maxVal - ratio * maxVal);
         const y = paddingTop + ratio * (height - paddingTop - paddingBottom);
         return (
-          <text key={i} x={paddingLeft - 8} y={y + 3} fill="#94a3b8" fontSize="9" textAnchor="end">
+          <text key={i} x={paddingLeft - 8} y={y + 3} fill="var(--text-secondary)" fontSize="9" textAnchor="end">
             {val}
           </text>
         );
@@ -195,8 +195,8 @@ function SVGDonutChart({ data, colors }) {
         );
       })}
       
-      <circle cx={cx} cy={cy} r="38" fill="#111827" />
-      <text x={cx} y={cy + 4} textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">
+      <circle cx={cx} cy={cy} r="38" fill="var(--gauge-inner-bg)" />
+      <text x={cx} y={cy + 4} textAnchor="middle" fill="var(--text-primary)" fontSize="11" fontWeight="bold">
         Total: {total}
       </text>
     </svg>

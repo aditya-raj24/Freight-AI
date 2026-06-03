@@ -43,8 +43,8 @@ function SVGDonutChart({ data, colors }) {
         );
       })}
       
-      <circle cx={cx} cy={cy} r={28} fill="#111827" />
-      <text x={cx} y={cy + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">
+      <circle cx={cx} cy={cy} r={28} fill="var(--gauge-inner-bg)" />
+      <text x={cx} y={cy + 3} textAnchor="middle" fill="var(--text-primary)" fontSize="8" fontWeight="bold">
         {total} total
       </text>
     </svg>
