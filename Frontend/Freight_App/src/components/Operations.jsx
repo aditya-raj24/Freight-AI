@@ -237,19 +237,37 @@ function Operations() {
                         </span>
                       </td>
                       <td data-label="Action">
-                        {b.bookingStatus === "Approved" && (
-                          <button className="btn-primary" style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem" }} onClick={() => handleGetRecommendation(b)}>
-                            Allocate Wagons (AI)
-                          </button>
-                        )}
-                        {b.bookingStatus !== "Approved" && nextStage && (
-                          <button className="btn-secondary" style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem" }} onClick={() => handleUpdateStatus(b.bookingId, nextStage)}>
-                            Advance: {nextStage}
-                          </button>
-                        )}
-                        {b.bookingStatus === "Delivered" && (
-                          <span style={{ fontSize: "0.8rem", color: "var(--success)", fontWeight: "bold" }}>Delivered</span>
-                        )}
+                        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
+                          {b.bookingStatus === "Approved" && (
+                            <button className="btn-primary" style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem" }} onClick={() => handleGetRecommendation(b)}>
+                              Allocate Wagons (AI)
+                            </button>
+                          )}
+                          {b.bookingStatus !== "Approved" && nextStage && (
+                            <button className="btn-secondary" style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem" }} onClick={() => handleUpdateStatus(b.bookingId, nextStage)}>
+                              Advance: {nextStage}
+                            </button>
+                          )}
+                          {b.bookingStatus !== "Delivered" && b.bookingStatus !== "Declined" && (
+                            <button 
+                              className="btn-danger" 
+                              style={{ padding: "0.4rem 0.8rem", fontSize: "0.8rem" }} 
+                              onClick={() => {
+                                if (window.confirm(`Are you sure you want to decline booking ${b.bookingId}?`)) {
+                                  handleUpdateStatus(b.bookingId, "Declined");
+                                }
+                              }}
+                            >
+                              Decline
+                            </button>
+                          )}
+                          {b.bookingStatus === "Delivered" && (
+                            <span style={{ fontSize: "0.8rem", color: "var(--success)", fontWeight: "bold" }}>Delivered</span>
+                          )}
+                          {b.bookingStatus === "Declined" && (
+                            <span style={{ fontSize: "0.8rem", color: "var(--danger)", fontWeight: "bold" }}>Declined</span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -380,7 +398,24 @@ function Operations() {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 {alertShortage && (
-                  <div className="badge badge-danger" style={{ width: "100%", padding: "0.75rem", display: "block" }}>{alertShortage}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", width: "100%" }}>
+                    <div className="badge badge-danger" style={{ width: "100%", padding: "0.75rem", display: "block", textAlign: "center" }}>
+                      {alertShortage}
+                    </div>
+                    <button 
+                      className="btn-danger" 
+                      style={{ width: "100%", padding: "0.6rem", fontSize: "0.85rem", fontWeight: "bold" }}
+                      onClick={() => {
+                        if (window.confirm(`Decline booking ${selectedBookingRec.bookingId} due to critical wagon shortage?`)) {
+                          handleUpdateStatus(selectedBookingRec.bookingId, "Declined");
+                          setSelectedBookingRec(null);
+                          setRecDetails(null);
+                        }
+                      }}
+                    >
+                      Decline booking due to shortage
+                    </button>
+                  </div>
                 )}
                 
                 <div>

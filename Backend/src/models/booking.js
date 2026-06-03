@@ -50,7 +50,8 @@ const BookingSchema = new mongoose.Schema({
       "Wagon Allocated",
       "Train Scheduled",
       "In Transit",
-      "Delivered"
+      "Delivered",
+      "Declined"
     ],
     default: "Submitted"
   },

@@ -174,7 +174,7 @@ exports.updateBooking = async (req, res) => {
 
     await booking.save();
 
-    // Auto-release associated wagons when booking status becomes "Delivered"
+    // Auto-release associated wagons when booking status becomes "Delivered" or "Declined"
     if (bookingStatus && oldStatus !== bookingStatus) {
       if (bookingStatus === "Delivered") {
         const allocatedWagons = await Wagon.find({ bookingId: booking.bookingId });
@@ -199,6 +199,30 @@ exports.updateBooking = async (req, res) => {
             null, // Broadcast to all
             "Wagons Released 🟢",
             `Wagons ${wagonNumbersStr} have been released at ${booking.destinationStation} following delivery of booking ${booking.bookingId}.`
+          );
+        }
+      } else if (bookingStatus === "Declined") {
+        const allocatedWagons = await Wagon.find({ bookingId: booking.bookingId });
+        if (allocatedWagons.length > 0) {
+          await Wagon.updateMany(
+            { bookingId: booking.bookingId },
+            { 
+              status: "Available", 
+              bookingId: null 
+            }
+          );
+          const wagonNumbersStr = allocatedWagons.map(w => w.wagonNumber).join(", ");
+          await writeAuditLog(
+            `Released wagons (${wagonNumbersStr}) due to Declined booking ${booking.bookingId}`,
+            req.user.email
+          );
+
+          // Broadcast notification about wagon release
+          await createAndSendNotification(
+            req.app,
+            null, // Broadcast to all
+            "Wagons Released (Decline) 🟢",
+            `Wagons ${wagonNumbersStr} have been released following decline of booking ${booking.bookingId}.`
           );
         }
       }
@@ -253,6 +277,9 @@ exports.deleteBooking = async (req, res) => {
         return res.status(400).json({ error: "Booking cannot be cancelled once it is approved or in transit." });
       }
     }
+
+    // Free any allocated wagons before deleting the booking
+    await Wagon.updateMany({ bookingId: id }, { status: "Available", bookingId: null });
 
     await Booking.deleteOne({ bookingId: id });
 
