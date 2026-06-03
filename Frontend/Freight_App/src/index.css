@@ -37,6 +37,10 @@
   --logo-text-gradient: linear-gradient(135deg, #60a5fa, #c084fc);
   --overlay-bg: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.1) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 45%);
+  --btn-secondary-bg: rgba(255, 255, 255, 0.05);
+  --btn-secondary-hover-bg: rgba(255, 255, 255, 0.09);
+  --btn-secondary-color: #f8fafc;
+  --btn-danger-color: #fca5a5;
 }
 
 :root[data-theme="light"] {
@@ -76,6 +80,10 @@
   --logo-text-gradient: linear-gradient(135deg, #1e40af, #6d28d9);
   --overlay-bg: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 45%);
+  --btn-secondary-bg: rgba(15, 23, 42, 0.06);
+  --btn-secondary-hover-bg: rgba(15, 23, 42, 0.1);
+  --btn-secondary-color: #0f172a;
+  --btn-danger-color: #dc2626;
 }
 
 * {
@@ -523,8 +531,8 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-color);
   border: 1px solid var(--border-color);
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -539,14 +547,14 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--btn-secondary-hover-bg);
+  border-color: var(--user-badge-hover-border);
 }
 
 .btn-danger {
   background: var(--danger-bg);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  color: var(--btn-danger-color);
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
