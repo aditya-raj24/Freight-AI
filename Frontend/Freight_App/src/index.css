@@ -1204,7 +1204,7 @@ tr:hover td {
 
 .sidebar-close-btn {
   display: none;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--btn-secondary-bg);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   font-size: 1rem;
@@ -1219,15 +1219,15 @@ tr:hover td {
 }
 
 .sidebar-close-btn:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  background: var(--hover-bg);
 }
 
 .menu-toggle-btn {
   display: none;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--btn-secondary-bg);
   border: 1px solid var(--border-color);
-  color: white;
+  color: var(--text-primary);
   font-size: 1.25rem;
   width: 42px;
   height: 42px;
@@ -1239,7 +1239,7 @@ tr:hover td {
 }
 
 .menu-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--hover-bg);
 }
 
 .header-left-group {
@@ -1311,7 +1311,7 @@ tr:hover td {
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-    background: #0d121e; /* solid dark background for drawer */
+    background: var(--bg-sidebar); /* adaptive theme background for drawer */
     border-right: 1px solid var(--border-color);
     padding: 1.5rem 1rem;
   }
@@ -1510,4 +1510,111 @@ tr:hover td {
     margin-top: 2rem;
     margin-bottom: 2rem;
   }
+}
+
+/* Customer Delay Prediction Timeline styles */
+.customer-timeline {
+  position: relative;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.timeline-step {
+  position: relative;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.timeline-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 38px;
+  width: 2px;
+  height: calc(100% + 0.5rem);
+  background: var(--border-color);
+  z-index: 1;
+}
+
+.timeline-step.completed:not(:last-child)::before {
+  background: var(--success);
+}
+
+.timeline-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--btn-secondary-bg);
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+  z-index: 2;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.timeline-content {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+  border-radius: 12px;
+  flex-grow: 1;
+  transition: all 0.3s ease;
+}
+
+.timeline-step:hover .timeline-content {
+  background: var(--hover-bg);
+  border-color: var(--text-muted);
+}
+
+.timeline-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.timeline-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Status variants */
+.timeline-step.completed .timeline-badge {
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.timeline-step.active .timeline-badge {
+  background: var(--primary-glow);
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.timeline-step.warning .timeline-badge {
+  background: var(--warning-bg);
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+.timeline-step.critical .timeline-badge {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
+  box-shadow: 0 0 15px var(--danger-bg);
+}
+
+.timeline-step.pending .timeline-badge {
+  background: var(--btn-secondary-bg);
+  border-color: var(--border-color);
+  color: var(--text-muted);
+  opacity: 0.6;
 }

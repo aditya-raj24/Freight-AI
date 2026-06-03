@@ -222,15 +222,14 @@ function App() {
             <span>📊</span> Dashboard
           </button>
 
+          <button className={`nav-item ${activeTab === "ai" ? "active" : ""}`} onClick={() => { setActiveTab("ai"); setIsSidebarOpen(false); }}>
+            <span>🤖</span> AI Scheduling
+          </button>
+
           {isCustomer && (
-            <>
-              <button className={`nav-item ${activeTab === "ai" ? "active" : ""}`} onClick={() => { setActiveTab("ai"); setIsSidebarOpen(false); }}>
-                <span>🤖</span> AI Scheduling
-              </button>
-              <button className={`nav-item ${activeTab === "booking" ? "active" : ""}`} onClick={() => { setActiveTab("booking"); setIsSidebarOpen(false); }}>
-                <span>📦</span> Freight Booking
-              </button>
-            </>
+            <button className={`nav-item ${activeTab === "booking" ? "active" : ""}`} onClick={() => { setActiveTab("booking"); setIsSidebarOpen(false); }}>
+              <span>📦</span> Freight Booking
+            </button>
           )}
 
           {isOfficer && (
@@ -355,7 +354,7 @@ function App() {
         {/* Dynamic Views Content Router */}
         <div style={{ paddingBottom: "80px" }}> {/* spacing for demo toolbar */}
           {activeTab === "dashboard" && <DashboardOverview onNavigate={setActiveTab} user={user} />}
-          {activeTab === "ai" && isCustomer && <AIPanel />}
+          {activeTab === "ai" && <AIPanel user={user} />}
           {activeTab === "booking" && isCustomer && <BookingPanel />}
           {activeTab === "operations" && isOfficer && <Operations />}
           {activeTab === "tracking" && <TrainTracking theme={theme} />}
