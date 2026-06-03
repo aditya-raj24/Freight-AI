@@ -64,10 +64,23 @@ function App() {
         const res = await fetch(`${API_BASE}/bookings`, { // Fallback/Fetch notifications
           headers: { Authorization: `Bearer ${token}` }
         });
-        // We'll mock a default notification to load first
-        setNotifications([
-          { _id: "n1", title: "Welcome to FreightLink", message: `Connected as ${user.name} (${user.role.toUpperCase()})`, status: "unread", createdAt: new Date() }
-        ]);
+        
+        const defaultNotif = { 
+          _id: "n1", 
+          title: "Welcome to FreightLink", 
+          message: `Connected as ${user.name} (${user.role.toUpperCase()})`, 
+          status: "unread", 
+          createdAt: new Date() 
+        };
+
+        const watchedKey = `watchedNotifications_${user.email}`;
+        const savedWatched = JSON.parse(localStorage.getItem(watchedKey) || "[]");
+        
+        if (!savedWatched.includes(defaultNotif._id)) {
+          setNotifications([defaultNotif]);
+        } else {
+          setNotifications([]);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -75,6 +88,10 @@ function App() {
     fetchNotifications();
 
     newSocket.on("notification", (newNotif) => {
+      const watchedKey = `watchedNotifications_${user.email}`;
+      const savedWatched = JSON.parse(localStorage.getItem(watchedKey) || "[]");
+      if (savedWatched.includes(newNotif._id)) return;
+
       // Play a clean browser alert sound if available
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -95,6 +112,22 @@ function App() {
 
     return () => newSocket.close();
   }, [user]);
+
+  const handleToggleNotifDropdown = () => {
+    const nextShow = !showNotifDropdown;
+    setShowNotifDropdown(nextShow);
+    
+    if (nextShow && user && notifications.length > 0) {
+      const watchedKey = `watchedNotifications_${user.email}`;
+      const savedWatched = JSON.parse(localStorage.getItem(watchedKey) || "[]");
+      const idsToWatch = notifications.map(n => n._id);
+      const updatedWatched = Array.from(new Set([...savedWatched, ...idsToWatch]));
+      localStorage.setItem(watchedKey, JSON.stringify(updatedWatched));
+      
+      // Mark as read in state
+      setNotifications(prev => prev.map(n => ({ ...n, status: "read" })));
+    }
+  };
 
   const handleAuthSuccess = (userData) => {
     setUser(userData);
@@ -271,7 +304,7 @@ function App() {
             
             {/* Notification Bell */}
             <div className="notification-bell-container">
-              <button className="icon-btn" onClick={() => setShowNotifDropdown(!showNotifDropdown)}>
+              <button className="icon-btn" onClick={handleToggleNotifDropdown}>
                 <span>🔔</span>
                 {unreadCount > 0 && <span className="badge-dot">{unreadCount}</span>}
               </button>
@@ -280,7 +313,20 @@ function App() {
                 <div className="notification-dropdown">
                   <div className="notification-header">
                     <span>Notifications Center</span>
-                    <button className="btn-secondary" style={{ padding: "0.2rem 0.5rem", fontSize: "0.7rem" }} onClick={() => setNotifications([])}>
+                    <button 
+                      className="btn-secondary" 
+                      style={{ padding: "0.2rem 0.5rem", fontSize: "0.7rem" }} 
+                      onClick={() => {
+                        if (user) {
+                          const watchedKey = `watchedNotifications_${user.email}`;
+                          const savedWatched = JSON.parse(localStorage.getItem(watchedKey) || "[]");
+                          const idsToWatch = notifications.map(n => n._id);
+                          const updatedWatched = Array.from(new Set([...savedWatched, ...idsToWatch]));
+                          localStorage.setItem(watchedKey, JSON.stringify(updatedWatched));
+                        }
+                        setNotifications([]);
+                      }}
+                    >
                       Clear
                     </button>
                   </div>
