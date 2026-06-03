@@ -57,7 +57,7 @@ exports.bookWagon = async (req, res) => {
       cargoType,
       weight: Number(weight),
       wagonCount,
-      priority: priority || "Low",
+      priority: req.user.role === "officer" ? (priority || "Low") : "Low",
       bookingStatus: "Submitted",
       estimatedArrival: new Date(Date.now() + 48 * 60 * 60 * 1000) // Default 48 hours ETA
     });
@@ -153,14 +153,56 @@ exports.updateBooking = async (req, res) => {
       return res.status(404).json({ error: "Booking not found." });
     }
 
+    // Access control: Customer can only update their own bookings
+    if (req.user.role === "customer" && booking.customerId._id.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Access denied. You do not own this booking." });
+    }
+
     const oldStatus = booking.bookingStatus;
 
+    // Enforce officer-only priority updates
+    if (priority && priority !== booking.priority) {
+      if (req.user.role !== "officer") {
+        return res.status(403).json({ error: "Access denied. Only officers can set or modify booking priority." });
+      }
+      booking.priority = priority;
+    }
+
     if (bookingStatus) booking.bookingStatus = bookingStatus;
-    if (priority) booking.priority = priority;
     if (estimatedArrival) booking.estimatedArrival = estimatedArrival;
     if (wagonCount) booking.wagonCount = wagonCount;
 
     await booking.save();
+
+    // Auto-release associated wagons when booking status becomes "Delivered"
+    if (bookingStatus && oldStatus !== bookingStatus) {
+      if (bookingStatus === "Delivered") {
+        const allocatedWagons = await Wagon.find({ bookingId: booking.bookingId });
+        if (allocatedWagons.length > 0) {
+          await Wagon.updateMany(
+            { bookingId: booking.bookingId },
+            { 
+              status: "Available", 
+              bookingId: null, 
+              currentStation: booking.destinationStation.toUpperCase() 
+            }
+          );
+          const wagonNumbersStr = allocatedWagons.map(w => w.wagonNumber).join(", ");
+          await writeAuditLog(
+            `Auto-released wagons (${wagonNumbersStr}) for Delivered booking ${booking.bookingId} at ${booking.destinationStation}`,
+            req.user.email
+          );
+
+          // Broadcast notification about wagon release
+          await createAndSendNotification(
+            req.app,
+            null, // Broadcast to all
+            "Wagons Released 🟢",
+            `Wagons ${wagonNumbersStr} have been released at ${booking.destinationStation} following delivery of booking ${booking.bookingId}.`
+          );
+        }
+      }
+    }
 
     // Trigger real-time notifications on status update
     if (bookingStatus && oldStatus !== bookingStatus) {

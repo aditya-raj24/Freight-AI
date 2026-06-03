@@ -27,6 +27,10 @@ const WagonSchema = new mongoose.Schema({
     required: true,
     uppercase: true,
     trim: true
+  },
+  bookingId: {
+    type: String,
+    default: null
   }
 });
 

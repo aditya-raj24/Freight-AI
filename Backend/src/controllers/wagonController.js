@@ -143,7 +143,7 @@ exports.allocateWagons = async (req, res) => {
     // Mark wagons as Allocated
     await Wagon.updateMany(
       { wagonNumber: { $in: wagonNumbers.map(w => w.toUpperCase()) } },
-      { status: "Allocated" }
+      { status: "Allocated", bookingId: bookingId }
     );
 
     // Update booking status
@@ -189,7 +189,7 @@ exports.releaseWagons = async (req, res) => {
     }
 
     // Release wagons and optionally update current station
-    const updateFields = { status: "Available" };
+    const updateFields = { status: "Available", bookingId: null };
     if (stationCode) updateFields.currentStation = stationCode.toUpperCase();
 
     await Wagon.updateMany(

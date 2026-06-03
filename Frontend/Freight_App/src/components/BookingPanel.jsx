@@ -119,15 +119,7 @@ function BookingPanel() {
                 </span>
               )}
             </div>
-            <div className="form-group">
-              <label>Priority level</label>
-              <select name="priority" value={formData.priority} onChange={handleChange}>
-                <option value="Low">Low (Standard Corridor)</option>
-                <option value="Medium">Medium (Yard Buffer Priority)</option>
-                <option value="High">High (Express Track Clearance)</option>
-                <option value="Critical">Critical (Green Siding Loop)</option>
-              </select>
-            </div>
+
           </div>
 
           <button type="submit" className="btn-primary" style={{ marginTop: "1.5rem", width: "auto" }} disabled={loading}>

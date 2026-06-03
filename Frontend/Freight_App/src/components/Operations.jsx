@@ -59,6 +59,25 @@ function Operations() {
     } catch (err) { console.error(err); }
   };
 
+  // UPDATE BOOKING PRIORITY
+  const handleUpdatePriority = async (bookingId, newPriority) => {
+    try {
+      const res = await fetch(`${API_BASE}/bookings/${bookingId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ priority: newPriority })
+      });
+      if (res.ok) {
+        fetchBookings();
+      } else {
+        const errData = await res.json();
+        alert(errData.error || "Failed to update priority");
+      }
+    } catch (err) {
+      console.error("Priority update error:", err);
+    }
+  };
+
   // AI RECOMMENDATION CALL
   const handleGetRecommendation = async (booking) => {
     setSelectedBookingRec(booking);
@@ -189,7 +208,29 @@ function Operations() {
                       <td data-label="Customer">{b.customerId?.name || "Customer"}</td>
                       <td data-label="Route">{b.sourceStation} ➔ {b.destinationStation}</td>
                       <td data-label="Cargo Details">{b.cargoType} ({b.weight}t | {b.wagonCount} wagons)</td>
-                      <td data-label="Priority"><span className={`badge badge-${b.priority === "Critical" ? "danger" : b.priority === "High" ? "warning" : "info"}`}>{b.priority}</span></td>
+                      <td data-label="Priority">
+                        <select 
+                          value={b.priority} 
+                          onChange={(e) => handleUpdatePriority(b.bookingId, e.target.value)}
+                          style={{ 
+                            padding: "0.3rem 0.5rem", 
+                            fontSize: "0.82rem", 
+                            width: "auto", 
+                            minWidth: "105px", 
+                            borderRadius: "6px",
+                            fontWeight: "600",
+                            backgroundColor: "var(--input-bg)",
+                            color: "var(--text-primary)",
+                            border: "1px solid var(--border-color)",
+                            cursor: "pointer"
+                          }}
+                        >
+                          <option value="Low">Low</option>
+                          <option value="Medium">Medium</option>
+                          <option value="High">High</option>
+                          <option value="Critical">Critical</option>
+                        </select>
+                      </td>
                       <td data-label="Pipeline Status">
                         <span className={`badge badge-${b.bookingStatus === "Delivered" ? "success" : b.bookingStatus === "Submitted" ? "muted" : "info"}`}>
                           {b.bookingStatus}
